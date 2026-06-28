@@ -4,7 +4,7 @@ import CartSidebar from './components/CartSidebar.vue'
 import { useCart } from './composables/useCart'
 import { useSettings } from './composables/useSettings'
 
-const cart = useCart()
+const { cart: cartState } = useCart()
 const { loadSettings } = useSettings()
 loadSettings()
 </script>
@@ -16,7 +16,7 @@ loadSettings()
       <main class="flex-1 overflow-y-auto p-4">
         <router-view />
       </main>
-      <CartSidebar v-if="cart.visible" />
+      <CartSidebar v-if="cartState.visible" />
     </div>
   </div>
 </template>

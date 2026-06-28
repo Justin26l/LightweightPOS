@@ -5,7 +5,7 @@ import { useSettings } from '../composables/useSettings'
 
 const route = useRoute()
 const router = useRouter()
-const cart = useCart()
+const { cart: cartState, toggle } = useCart()
 const { settings } = useSettings()
 
 const tabs = [
@@ -34,11 +34,11 @@ function navigate(path: string) {
     <span class="text-sm mr-2">{{ settings.storeName || '' }}</span>
     <span class="font-bold">{{ settings.currencySymbol || '¥' }}</span>
     <button
-      @click="cart.toggle()"
+      @click="toggle()"
       class="ml-2 px-3 py-1 rounded hover:bg-white/20 transition-colors text-xl"
-      :title="$t(cart.visible ? 'cart.hide' : 'cart.show')"
+      :title="$t(cartState.visible ? 'cart.hide' : 'cart.show')"
     >
-      {{ cart.visible ? '◀' : '▶' }}
+      {{ cartState.visible ? '◀' : '▶' }}
     </button>
   </header>
 </template>

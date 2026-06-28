@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useItems } from '../composables/useItems'
 import { useCart } from '../composables/useCart'
 import { useCombos } from '../composables/useCombos'
@@ -29,6 +29,12 @@ onMounted(async () => {
   await loadItems()
   materials.value = await db.rawMaterials.toArray()
   await loadCombos()
+})
+
+// Real-time stock: reload when cart is cleared (checkout happened)
+watch(() => cart.cart.items.length, () => {
+  loadItems()
+  loadCombos()
 })
 
 // Groups
@@ -103,8 +109,13 @@ async function handleDeleteCombo(id: number) {
 
 function addGroup() {
   if (newGroupName.value.trim()) {
+    // Auto-open add item form with the new group pre-filled
+    editingItem.value = null
+    itemForm.value = { name: '', price: 0, minQty: 1, groupName: newGroupName.value.trim() }
+    formMaterials.value = []
     showGroupInput.value = false
     newGroupName.value = ''
+    showItemForm.value = true
   }
 }
 
@@ -197,7 +208,7 @@ async function handleDelete(id: number) {
           ⊞ {{ $t('items.combo') }}
         </h2>
         <div class="h-px bg-indigo-200 mb-3" />
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           <div
             v-for="combo in combos"
             :key="combo.id"
@@ -243,7 +254,7 @@ async function handleDelete(id: number) {
           </button>
         </div>
         <div class="h-px bg-gray-200 mb-3" />
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           <div
             v-for="item in groupItems"
             :key="item.id"
