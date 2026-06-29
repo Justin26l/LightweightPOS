@@ -13,7 +13,6 @@
       "Bash(npm run *)",
       "Bash(npx tsc *)",
       "Bash(npx vue-tsc *)",
-      "Read(//home/justin/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/skills/subagent-driven-development/**)"
     ]
   },
   "enabledPlugins": {
