@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useSettings } from '../composables/useSettings'
 import ConfirmDialog from '../components/ConfirmDialog.vue'
+import { version } from '../../package.json'
 
 const { settings, saveSetting, getAllGroups, deleteGroup, clearAllData } = useSettings()
 const groups = ref<string[]>([])
@@ -73,10 +74,10 @@ async function handleClearAll() {
         <option value="€">€ (EUR)</option>
         <option value="">None</option>
       </select>
-    </section>
-
-    <!-- Language -->
-    <section class="bg-white rounded-xl p-6 shadow-sm">
+      
+      <br/>
+      <br/>
+      
       <label class="block text-sm font-medium text-gray-700 mb-2">
         {{ $t('settings.language') }}
       </label>
@@ -126,6 +127,9 @@ async function handleClearAll() {
         </button>
       </div>
     </section>
+
+    <!-- Version -->
+    <p class="text-center text-gray-400 text-sm pb-4">{{ $t('settings.version') }} {{ version }}</p>
 
     <!-- Confirm Dialogs -->
     <ConfirmDialog

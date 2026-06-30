@@ -91,6 +91,7 @@ export default {
     saved: '已保存',
     deleteGroup: '删除分组',
     confirmDeleteGroup: '删除分组不会删除品项，品项分组将变为空。确认？',
+    version: '版本',
   },
   common: {
     save: '保存',

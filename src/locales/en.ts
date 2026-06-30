@@ -91,6 +91,7 @@ export default {
     saved: 'Saved',
     deleteGroup: 'Delete Group',
     confirmDeleteGroup: 'Items in this group will have an empty group name. Confirm?',
+    version: 'Version',
   },
   common: {
     save: 'Save',
