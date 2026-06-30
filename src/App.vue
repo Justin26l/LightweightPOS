@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { watch } from 'vue'
 import { useRoute } from 'vue-router'
 import NavBar from './components/NavBar.vue'
 import CartSidebar from './components/CartSidebar.vue'
@@ -7,8 +8,12 @@ import { useSettings } from './composables/useSettings'
 
 const route = useRoute()
 const { cart: cartState } = useCart()
-const { loadSettings } = useSettings()
+const { settings, loadSettings } = useSettings()
 loadSettings()
+
+watch(() => settings.storeName, (name) => {
+  document.title = name || 'LightweightPOS'
+}, { immediate: true })
 </script>
 
 <template>
