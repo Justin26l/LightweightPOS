@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  base: '/LightweightPOS/', 
   plugins: [
     vue(),
     tailwindcss(),
@@ -35,5 +36,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: { '@': '/src' },
+  },
+  build: {
+    outDir: 'docs',
   },
 })
