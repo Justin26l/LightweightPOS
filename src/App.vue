@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router'
 import NavBar from './components/NavBar.vue'
 import CartSidebar from './components/CartSidebar.vue'
 import { useCart } from './composables/useCart'
 import { useSettings } from './composables/useSettings'
 
+const route = useRoute()
 const { cart: cartState } = useCart()
 const { loadSettings } = useSettings()
 loadSettings()
@@ -16,7 +18,7 @@ loadSettings()
       <main class="flex-1 overflow-y-auto bg-gray-100">
         <router-view />
       </main>
-      <CartSidebar v-if="cartState.visible" />
+      <CartSidebar v-if="cartState.visible && route.name === 'items'" />
     </div>
   </div>
 </template>

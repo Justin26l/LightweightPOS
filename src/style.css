@@ -3,3 +3,7 @@
 .input {
     @apply w-full px-3 py-2 border border-gray-400 rounded-lg text-lg
 }
+
+.card {
+    @apply bg-white rounded-xl p-4 shadow-sm hover:shadow-md cursor-pointer transition-all border-2 border-gray-50 hover:border-blue-200
+}

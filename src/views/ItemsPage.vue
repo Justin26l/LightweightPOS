@@ -251,7 +251,7 @@ async function handleDelete(id: number) {
             v-for="item in groupItems"
             :key="item.id"
             @click="!editMode && addToCart(item)"
-            class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md cursor-pointer transition-all border-2 border-transparent hover:border-indigo-200"
+            class="card"
             :class="{
               'opacity-50 pointer-events-none cursor-not-allowed': item.stock <= 0,
               'border-amber-300': editMode,
