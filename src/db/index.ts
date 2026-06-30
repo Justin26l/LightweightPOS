@@ -12,7 +12,7 @@ export class AppDatabase extends Dexie {
   settings!: Table<Setting, string>
 
   constructor() {
-    super('SimpleAccountDB')
+    super('LightweightPosDB')
     this.version(1).stores({
       items: '++id, groupName',
       combos: '++id',

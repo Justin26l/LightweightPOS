@@ -11,8 +11,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: 'Simple Account',
-        short_name: 'SimpleAccount',
+        name: 'Lightweight POS',
+        short_name: 'LightweightPos',
         description: 'Offline order system for store sales',
         theme_color: '#4f46e5',
         background_color: '#f9fafb',

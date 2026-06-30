@@ -95,7 +95,7 @@ simple-account/
 - [ ] **Step 1: Initialize project**
 
 ```bash
-cd /c/Users/Justin/Documents/GitHub/SimpleAccount
+cd /c/Users/Justin/Documents/GitHub/LightweightPos
 npm create vite@latest . -- --template vue-ts
 ```
 
@@ -217,7 +217,7 @@ export class AppDatabase extends Dexie {
   settings!: Table<Setting, string>
 
   constructor() {
-    super('SimpleAccountDB')
+    super('LightweightPosDB')
     this.version(1).stores({
       items: '++id, groupName',
       combos: '++id',
@@ -2792,7 +2792,7 @@ export default defineConfig({
       includeAssets: ['favicon.svg'],
       manifest: {
         name: 'Simple Account',
-        short_name: 'SimpleAccount',
+        short_name: 'LightweightPos',
         description: 'Offline order system for store sales',
         theme_color: '#4f46e5',
         background_color: '#f9fafb',
