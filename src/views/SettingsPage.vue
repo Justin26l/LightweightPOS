@@ -50,7 +50,7 @@ async function handleClearAll() {
       <input
         :value="settings.storeName"
         @change="save('storeName', ($event.target as HTMLInputElement).value)"
-        class="w-full px-4 py-3 border rounded-lg text-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
+        class="input"
         placeholder="My Store"
       />
     </section>
@@ -63,7 +63,7 @@ async function handleClearAll() {
       <select
         :value="settings.currencySymbol"
         @change="save('currencySymbol', ($event.target as HTMLSelectElement).value)"
-        class="w-full px-4 py-3 border rounded-lg text-lg focus:ring-2 focus:ring-indigo-400"
+        class="input"
       >
         <option value="RM">RM (MYR)</option>
         <option value="$">$ (SGD)</option>
@@ -83,7 +83,7 @@ async function handleClearAll() {
       <select
         :value="settings.locale"
         @change="save('locale', ($event.target as HTMLSelectElement).value)"
-        class="w-full px-4 py-3 border rounded-lg text-lg focus:ring-2 focus:ring-indigo-400"
+        class="input"
       >
         <option value="zh-CN">中文</option>
         <option value="en">English</option>
