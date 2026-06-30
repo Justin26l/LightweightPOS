@@ -13,7 +13,7 @@ loadSettings()
   <div class="h-screen w-screen flex flex-col overflow-hidden bg-gray-50">
     <NavBar />
     <div class="flex-1 flex overflow-hidden">
-      <main class="flex-1 overflow-y-auto p-4">
+      <main class="flex-1 overflow-y-auto bg-gray-100">
         <router-view />
       </main>
       <CartSidebar v-if="cartState.visible" />

@@ -1593,19 +1593,19 @@ async function handleDelete(id: number) {
       <div class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('items.name') }}</label>
-          <input v-model="itemForm.name" class="w-full px-3 py-2 border rounded-lg text-lg" />
+          <input v-model="itemForm.name" class="input" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('items.price') }}</label>
-          <input v-model.number="itemForm.price" type="number" step="0.01" min="0" class="w-full px-3 py-2 border rounded-lg text-lg" />
+          <input v-model.number="itemForm.price" type="number" step="0.01" min="0" class="input" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('items.minQty') }}</label>
-          <input v-model.number="itemForm.minQty" type="number" min="1" class="w-full px-3 py-2 border rounded-lg text-lg" />
+          <input v-model.number="itemForm.minQty" type="number" min="1" class="input" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('items.groupName') }}</label>
-          <input v-model="itemForm.groupName" list="group-list" class="w-full px-3 py-2 border rounded-lg text-lg" />
+          <input v-model="itemForm.groupName" list="group-list" class="input" />
           <datalist id="group-list">
             <option v-for="g in sortedGroups" :key="g[0]" :value="g[0]" />
           </datalist>
@@ -1859,11 +1859,11 @@ Add combo form modal (after item form modal):
   <div class="space-y-4">
     <div>
       <label class="block text-sm font-medium text-gray-700">{{ $t('items.name') }}</label>
-      <input v-model="comboForm.name" class="w-full px-3 py-2 border rounded-lg text-lg" />
+      <input v-model="comboForm.name" class="input" />
     </div>
     <div>
       <label class="block text-sm font-medium text-gray-700">{{ $t('items.price') }}</label>
-      <input v-model.number="comboForm.price" type="number" step="0.01" min="0" class="w-full px-3 py-2 border rounded-lg text-lg" />
+      <input v-model.number="comboForm.price" type="number" step="0.01" min="0" class="input" />
     </div>
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('items.name') }}</label>
@@ -2122,11 +2122,11 @@ async function handleDelete(id: number) {
       <div class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('materials.name') }}</label>
-          <input v-model="form.name" class="w-full px-3 py-2 border rounded-lg text-lg" />
+          <input v-model="form.name" class="input" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('materials.unit') }}</label>
-          <select v-model="form.unit" class="w-full px-3 py-2 border rounded-lg text-lg">
+          <select v-model="form.unit" class="input">
             <option value="个">个</option>
             <option value="g">g</option>
             <option value="ml">ml</option>
@@ -2135,15 +2135,15 @@ async function handleDelete(id: number) {
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('materials.unitCost') }}</label>
-          <input v-model.number="form.unitCost" type="number" step="0.01" min="0" class="w-full px-3 py-2 border rounded-lg text-lg" />
+          <input v-model.number="form.unitCost" type="number" step="0.01" min="0" class="input" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('materials.currentStock') }}</label>
-          <input v-model.number="form.currentStock" type="number" min="0" class="w-full px-3 py-2 border rounded-lg text-lg" />
+          <input v-model.number="form.currentStock" type="number" min="0" class="input" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('materials.alertThreshold') }}</label>
-          <input v-model.number="form.alertThreshold" type="number" min="0" class="w-full px-3 py-2 border rounded-lg text-lg" />
+          <input v-model.number="form.alertThreshold" type="number" min="0" class="input" />
         </div>
         <div class="flex justify-end gap-3 pt-2">
           <button @click="showForm = false" class="px-6 py-3 border rounded-lg text-lg">{{ $t('common.cancel') }}</button>
@@ -2162,7 +2162,7 @@ async function handleDelete(id: number) {
         <p>{{ $t('materials.current') }}: <strong>{{ showAdjust.currentStock }} {{ showAdjust.unit }}</strong></p>
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('materials.adjustAmount') }}</label>
-          <input v-model.number="adjustDelta" type="number" class="w-full px-3 py-2 border rounded-lg text-lg" placeholder="+10 / -5" />
+          <input v-model.number="adjustDelta" type="number" class="input" placeholder="+10 / -5" />
         </div>
         <p>{{ $t('materials.afterAdjust') }}: <strong>{{ Math.max(0, showAdjust.currentStock + adjustDelta) }} {{ showAdjust.unit }}</strong></p>
         <div class="flex justify-end gap-3 pt-2">

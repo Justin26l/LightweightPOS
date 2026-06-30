@@ -11,7 +11,7 @@ const orders = ref<any[]>([])
 const orderItems = ref<any[]>([])
 const dateRange = ref<'today' | 'custom'>('today')
 const startDate = ref(new Date().toISOString().slice(0, 10))
-const endDate = ref(new Date().toISOString().slice(0, 10))
+const endDate = ref(new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().slice(0, 10))
 
 onMounted(loadSales)
 
@@ -70,14 +70,14 @@ watch([startDate, endDate], loadSales)
 </script>
 
 <template>
-  <div class="h-full overflow-y-auto">
+  <div class="h-full overflow-y-auto p-3">
     <!-- Date Controls -->
     <div class="flex items-center gap-4 mb-6 flex-wrap">
       <div class="flex items-center gap-2">
         <label class="text-sm font-medium">{{ $t('sales.date') }}:</label>
-        <input v-model="startDate" type="date" class="px-3 py-2 border rounded-lg" />
+        <input v-model="startDate" type="date" class="input" />
         <span>~</span>
-        <input v-model="endDate" type="date" class="px-3 py-2 border rounded-lg" />
+        <input v-model="endDate" type="date" class="input" />
       </div>
       <button
         @click="handleExportXlsx"

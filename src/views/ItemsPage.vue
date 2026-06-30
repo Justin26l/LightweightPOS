@@ -169,39 +169,37 @@ async function handleDelete(id: number) {
 </script>
 
 <template>
-  <div class="h-full flex flex-col" :class="{ 'bg-amber-50': editMode }">
-    <!-- Edit Mode Toggle + Actions -->
-    <div class="flex items-center gap-2 mb-4 flex-wrap">
-      <button
-        @click="editMode = !editMode"
-        class="px-4 py-2 rounded-lg text-lg font-medium transition-colors"
-        :class="editMode ? 'bg-amber-500 text-white' : 'bg-gray-200 hover:bg-gray-300'"
-      >
-        {{ editMode ? $t('items.normalMode') : $t('items.editMode') }}
-      </button>
-      <template v-if="editMode">
-        <template v-if="!showGroupInput">
-          <button @click="openAddItem()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-lg">
-            + {{ $t('items.addItem') }}
-          </button>
-          <button @click="openAddCombo()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-lg">
-            + {{ $t('items.addCombo') }}
-          </button>
-          <button @click="showGroupInput = true" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-lg">
-            + {{ $t('items.addGroup') }}
-          </button>
-        </template>
-        <template v-else>
-          <input v-model="newGroupName" @keyup.enter="addGroup" @keyup.escape="showGroupInput = false"
-            class="px-3 py-2 border rounded-lg" :placeholder="$t('items.groupName')" />
-          <button @click="addGroup" class="px-3 py-2 bg-indigo-600 text-white rounded-lg">OK</button>
-          <button @click="showGroupInput = false" class="px-3 py-2 border rounded-lg">{{ $t('common.cancel') }}</button>
-        </template>
-      </template>
-    </div>
-
-    <!-- Grid -->
+  <div class="h-full flex flex-col p-3" :class="{ 'bg-amber-50': editMode }">
     <div class="flex-1 overflow-y-auto">
+        <!-- Edit Mode Toggle + Actions -->
+        <div class="flex items-center gap-2 mb-4 flex-wrap">
+            <button
+                @click="editMode = !editMode"
+                class="px-4 py-2 rounded-lg text-lg font-medium transition-colors"
+                :class="editMode ? 'bg-amber-500 text-white' : 'bg-gray-200 hover:bg-gray-300'"
+            >
+                {{ editMode ? $t('items.normalMode') : $t('items.editMode') }}
+            </button>
+            <template v-if="editMode">
+                <template v-if="!showGroupInput">
+                <button @click="openAddItem()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-lg">
+                    + {{ $t('items.addItem') }}
+                </button>
+                <button @click="openAddCombo()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-lg">
+                    + {{ $t('items.addCombo') }}
+                </button>
+                <button @click="showGroupInput = true" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-lg">
+                    + {{ $t('items.addGroup') }}
+                </button>
+                </template>
+                <template v-else>
+                <input v-model="newGroupName" @keyup.enter="addGroup" @keyup.escape="showGroupInput = false"
+                    class="px-3 py-2 border rounded-lg" :placeholder="$t('items.groupName')" />
+                <button @click="addGroup" class="px-3 py-2 bg-indigo-600 text-white rounded-lg">OK</button>
+                <button @click="showGroupInput = false" class="px-3 py-2 border rounded-lg">{{ $t('common.cancel') }}</button>
+                </template>
+            </template>
+        </div>
       <!-- Combos section -->
       <div v-if="combos.length" class="mb-6">
         <h2 class="text-lg font-bold text-indigo-700 mb-2 px-1">
@@ -246,12 +244,6 @@ async function handleDelete(id: number) {
       <div v-for="[group, groupItems] in sortedGroups" :key="group" class="mb-6">
         <div class="flex items-center justify-between mb-2 px-1">
           <h2 class="text-lg font-bold text-gray-700">{{ group || $t('items.groupName') }}</h2>
-          <button
-            v-if="editMode"
-            class="px-2 py-1 text-sm bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200"
-          >
-            + {{ $t('items.addGroup') }}
-          </button>
         </div>
         <div class="h-px bg-gray-200 mb-3" />
         <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
@@ -301,19 +293,19 @@ async function handleDelete(id: number) {
       <div class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('items.name') }}</label>
-          <input v-model="itemForm.name" class="w-full px-3 py-2 border rounded-lg text-lg" />
+          <input v-model="itemForm.name" class="input" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('items.price') }}</label>
-          <input v-model.number="itemForm.price" type="number" step="0.01" min="0" class="w-full px-3 py-2 border rounded-lg text-lg" />
+          <input v-model.number="itemForm.price" type="number" step="0.01" min="0" class="input" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('items.minQty') }}</label>
-          <input v-model.number="itemForm.minQty" type="number" min="1" class="w-full px-3 py-2 border rounded-lg text-lg" />
+          <input v-model.number="itemForm.minQty" type="number" min="1" class="input" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('items.groupName') }}</label>
-          <input v-model="itemForm.groupName" list="group-list" class="w-full px-3 py-2 border rounded-lg text-lg" />
+          <input v-model="itemForm.groupName" list="group-list" class="input" />
           <datalist id="group-list">
             <option v-for="g in sortedGroups" :key="g[0]" :value="g[0]" />
           </datalist>
@@ -352,11 +344,11 @@ async function handleDelete(id: number) {
       <div class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('items.name') }}</label>
-          <input v-model="comboForm.name" class="w-full px-3 py-2 border rounded-lg text-lg" />
+          <input v-model="comboForm.name" class="input" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('items.price') }}</label>
-          <input v-model.number="comboForm.price" type="number" step="0.01" min="0" class="w-full px-3 py-2 border rounded-lg text-lg" />
+          <input v-model.number="comboForm.price" type="number" step="0.01" min="0" class="input" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('items.name') }}</label>

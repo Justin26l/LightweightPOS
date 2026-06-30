@@ -65,11 +65,13 @@ async function handleClearAll() {
         @change="save('currencySymbol', ($event.target as HTMLSelectElement).value)"
         class="w-full px-4 py-3 border rounded-lg text-lg focus:ring-2 focus:ring-indigo-400"
       >
+        <option value="RM">RM (MYR)</option>
+        <option value="$">$ (SGD)</option>
         <option value="¥">¥ (CNY)</option>
         <option value="$">$ (USD)</option>
         <option value="NT$">NT$ (TWD)</option>
         <option value="€">€ (EUR)</option>
-        <option>自定义</option>
+        <option value="">None</option>
       </select>
     </section>
 
