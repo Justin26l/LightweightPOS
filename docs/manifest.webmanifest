@@ -1,1 +1,19 @@
-{"name":"Lightweight POS","short_name":"LightweightPos","start_url":"/","display":"standalone","background_color":"#f9fafb","lang":"en","scope":"/","description":"Offline order system for store sales","theme_color":"#4f46e5","orientation":"landscape","icons":[{"src":"favicon.svg","sizes":"any","type":"image/svg+xml"}]}
+{
+    "name": "Lightweight POS",
+    "short_name": "LightweightPos",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f9fafb",
+    "lang": "en",
+    "scope": "/",
+    "description": "Offline order system for store sales",
+    "theme_color": "#4f46e5",
+    "orientation": "any",
+    "icons": [
+        {
+            "src": "favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        }
+    ]
+}
