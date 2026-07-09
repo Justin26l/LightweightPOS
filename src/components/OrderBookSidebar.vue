@@ -2,14 +2,12 @@
 import { ref, onMounted, computed } from 'vue'
 import { useOrders } from '../composables/useOrders'
 import { useSettings } from '../composables/useSettings'
-import { useCart } from '../composables/useCart'
 import { db } from '../db'
 import ConfirmDialog from './ConfirmDialog.vue'
 
 const emit = defineEmits<{ close: [] }>()
 const { getOrders, getOrderItems, markOrderPaid, updateOrderItems } = useOrders()
 const { settings } = useSettings()
-const { addItem } = useCart()
 
 const orders = ref<any[]>([])
 const orderItemsMap = ref<Record<number, any[]>>({})
@@ -25,11 +23,10 @@ onMounted(loadData)
 async function loadData() {
   orders.value = await getOrders()
   // 加载所有订单的品项
-  for (const order of orders.value) {
-    if (!orderItemsMap.value[order.id!]) {
-      orderItemsMap.value[order.id!] = await getOrderItems(order.id!)
-    }
-  }
+  const promises = orders.value
+    .filter(o => !orderItemsMap.value[o.id!])
+    .map(o => getOrderItems(o.id!).then(items => { orderItemsMap.value[o.id!] = items }))
+  await Promise.all(promises)
   // 加载所有品项和套餐供改单时添加
   availableItems.value = await db.items.toArray()
   availableCombos.value = await db.combos.toArray()
@@ -132,18 +129,6 @@ async function handleMarkPaid(orderId: number) {
   await markOrderPaid(orderId)
   showMarkPaidConfirm.value = null
   orders.value = await getOrders()
-  // 更新该订单在展开映射中的状态
-}
-
-function getAddableItems() {
-  const result: { label: string; value: string }[] = []
-  for (const item of availableItems.value) {
-    result.push({ label: `${item.name} (品项)`, value: `item-${item.id}` })
-  }
-  for (const combo of availableCombos.value) {
-    result.push({ label: `${combo.name} (套餐)`, value: `combo-${combo.id}` })
-  }
-  return result
 }
 
 function handleAddSelect(event: Event) {
@@ -242,9 +227,12 @@ function handleAddSelect(event: Event) {
             <div class="mt-2">
               <select @change="handleAddSelect" class="w-full px-3 py-2 border rounded-lg text-sm bg-white">
                 <option value="">{{ $t('orderBook.addItem') }}...</option>
-                <option v-for="opt in getAddableItems()" :key="opt.value" :value="opt.value">
-                  {{ opt.label }}
-                </option>
+                <optgroup :label="$t('items.title')">
+                  <option v-for="item in availableItems" :key="'item-'+item.id" :value="'item-'+item.id">{{ item.name }}</option>
+                </optgroup>
+                <optgroup :label="$t('items.combo')">
+                  <option v-for="combo in availableCombos" :key="'combo-'+combo.id" :value="'combo-'+combo.id">{{ combo.name }}</option>
+                </optgroup>
               </select>
             </div>
 
