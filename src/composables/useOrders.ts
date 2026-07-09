@@ -117,21 +117,23 @@ export function useOrders() {
   }
 
   async function updateOrderItems(orderId: number, items: { type: 'item' | 'combo'; refId: number; name: string; qty: number; unitPrice: number; unitCost: number }[]) {
-    // 全删重建 order items
-    await db.orderItems.where('orderId').equals(orderId).delete()
-    for (const item of items) {
-      await db.orderItems.add({ orderId, ...item })
-    }
-    // 重新计算 totals
-    let totalAmount = 0
-    let totalCost = 0
-    let itemCount = 0
-    for (const item of items) {
-      totalAmount += item.unitPrice * item.qty
-      totalCost += item.unitCost * item.qty
-      itemCount += item.qty
-    }
-    await db.orders.update(orderId, { totalAmount, totalCost, itemCount })
+    await db.transaction('rw', db.orderItems, db.orders, async () => {
+      // 全删重建 order items
+      await db.orderItems.where('orderId').equals(orderId).delete()
+      for (const item of items) {
+        await db.orderItems.add({ orderId, ...item })
+      }
+      // 重新计算 totals
+      let totalAmount = 0
+      let totalCost = 0
+      let itemCount = 0
+      for (const item of items) {
+        totalAmount += item.unitPrice * item.qty
+        totalCost += item.unitCost * item.qty
+        itemCount += item.qty
+      }
+      await db.orders.update(orderId, { totalAmount, totalCost, itemCount })
+    })
   }
 
   async function getTodaySales() {

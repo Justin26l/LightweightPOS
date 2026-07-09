@@ -53,7 +53,7 @@ async function handleCheckout() {
       <span>
         {{ $t('cart.title') }}
         <span v-if="cartState.items.length" class="text-sm font-normal text-gray-500">
-          ({{ itemCount.value }})
+          ({{ itemCount }})
         </span>
       </span>
       <button @click="emit('close')" class="text-2xl leading-none text-gray-400 hover:text-gray-600">&times;</button>
@@ -90,13 +90,13 @@ async function handleCheckout() {
         <div class="space-y-1 text-sm">
           <div class="flex justify-between">
             <span>{{ $t('cart.profit') }}:</span>
-            <span :class="profit.value >= 0 ? 'text-green-600' : 'text-red-600'">
-              {{ settings.currencySymbol }}{{ profit.value.toFixed(2) }}
+            <span :class="profit >= 0 ? 'text-green-600' : 'text-red-600'">
+              {{ settings.currencySymbol }}{{ profit.toFixed(2) }}
             </span>
           </div>
           <div class="flex justify-between font-bold text-lg pt-1 border-t border-gray-400">
             <span>{{ $t('cart.total') }}:</span>
-            <span>{{ settings.currencySymbol }}{{ totalAmount.value.toFixed(2) }}</span>
+            <span>{{ settings.currencySymbol }}{{ totalAmount.toFixed(2) }}</span>
           </div>
         </div>
         <div class="flex gap-2">
@@ -141,7 +141,7 @@ async function handleCheckout() {
         <div class="border-t pt-4">
           <div class="flex justify-between font-bold text-lg">
             <span>{{ $t('cart.total') }}:</span>
-            <span>{{ settings.currencySymbol }}{{ totalAmount.value.toFixed(2) }}</span>
+            <span>{{ settings.currencySymbol }}{{ totalAmount.toFixed(2) }}</span>
           </div>
         </div>
 
