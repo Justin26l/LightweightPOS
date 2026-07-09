@@ -7,6 +7,8 @@ interface SettingsState {
   locale: string
 }
 
+const DEFAULT_PAYMENT_METHODS = ['现金', '微信扫码', '支付宝', '银行卡']
+
 const defaults: SettingsState = {
   storeName: '',
   currencySymbol: '¥',
@@ -43,6 +45,28 @@ export function useSettings() {
     await db.items.where('groupName').equals(groupName).modify({ groupName: '' })
   }
 
+  async function getPaymentMethods(): Promise<string[]> {
+    const val = await db.settings.get('paymentMethods')
+    return val?.value ?? DEFAULT_PAYMENT_METHODS
+  }
+
+  async function addPaymentMethod(name: string) {
+    const methods = await getPaymentMethods()
+    if (!methods.includes(name)) {
+      methods.push(name)
+      await db.settings.put({ key: 'paymentMethods', value: methods })
+    }
+  }
+
+  async function deletePaymentMethod(name: string) {
+    const methods = await getPaymentMethods()
+    const idx = methods.indexOf(name)
+    if (idx !== -1) {
+      methods.splice(idx, 1)
+      await db.settings.put({ key: 'paymentMethods', value: methods })
+    }
+  }
+
   async function clearAllData() {
     await db.delete()
     await db.open()
@@ -57,5 +81,8 @@ export function useSettings() {
     getAllGroups,
     deleteGroup,
     clearAllData,
+    getPaymentMethods,
+    addPaymentMethod,
+    deletePaymentMethod,
   }
 }
