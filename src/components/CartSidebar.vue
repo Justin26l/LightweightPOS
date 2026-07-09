@@ -88,13 +88,13 @@ async function handleCheckout() {
       <!-- Footer -->
       <div class="border-t border-gray-400 p-4 space-y-3">
         <div class="space-y-1 text-sm">
-          <div class="flex justify-between">
+          <!-- <div class="flex justify-between pb-1 border-b border-gray-400">
             <span>{{ $t('cart.profit') }}:</span>
             <span :class="profit >= 0 ? 'text-green-600' : 'text-red-600'">
               {{ settings.currencySymbol }}{{ profit.toFixed(2) }}
             </span>
-          </div>
-          <div class="flex justify-between font-bold text-lg pt-1 border-t border-gray-400">
+          </div> -->
+          <div class="flex justify-between font-bold text-4xl pb-3">
             <span>{{ $t('cart.total') }}:</span>
             <span>{{ settings.currencySymbol }}{{ totalAmount.toFixed(2) }}</span>
           </div>

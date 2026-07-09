@@ -30,6 +30,6 @@ function navigate(path: string) {
     </button>
     <div class="flex-1" />
     <span class="text-sm mr-2">{{ settings.storeName || '' }}</span>
-    <span class="font-bold">{{ settings.currencySymbol || '¥' }}</span>
+    <span class="font-bold">{{ settings.currencySymbol || '-' }}</span>
   </header>
 </template>

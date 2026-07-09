@@ -21,7 +21,10 @@ async function updateUnpaidCount() {
   unpaidCount.value = orders.filter(o => !o.paid).length
 }
 
-onMounted(updateUnpaidCount)
+onMounted(()=>{
+  loadSettings();
+  updateUnpaidCount();
+})
 
 watch(() => uiState.orderBookVisible, (visible) => {
   if (visible) updateUnpaidCount()
@@ -78,7 +81,7 @@ watch(() => settings.storeName, (name) => {
       </div>
 
       <!-- 桌面端 (lg+): sidepanel 推挤主内容 -->
-      <div v-if="showPanels()" class="hidden lg:flex">
+      <div v-if="showPanels()" class="hidden md:flex">
         <div
           class="overflow-hidden transition-all duration-300 ease-in-out"
           :class="uiState.cartVisible ? 'max-w-[30vw]' : 'max-w-0'"
@@ -95,7 +98,7 @@ watch(() => settings.storeName, (name) => {
     </div>
 
     <!-- 手机端 (<lg): sidepanel 固定定位覆盖 -->
-    <div v-if="showPanels()" class="lg:hidden">
+    <div v-if="showPanels()" class="md:hidden">
       <div
         v-if="uiState.cartVisible || uiState.orderBookVisible"
         class="fixed inset-0 z-20 bg-black/20"
@@ -103,12 +106,12 @@ watch(() => settings.storeName, (name) => {
       />
       <CartSidebar
         v-if="uiState.cartVisible"
-        class="!fixed !right-0 !top-0 !h-full w-[30vw] z-30 shadow-xl"
+        class="!fixed !right-0 !top-0 !h-full w-[90vw] z-30 shadow-xl"
         @close="closePanels"
       />
       <OrderBookSidebar
         v-if="uiState.orderBookVisible"
-        class="!fixed !right-0 !top-0 !h-full w-[30vw] z-30 shadow-xl"
+        class="!fixed !right-0 !top-0 !h-full w-[90vw] z-30 shadow-xl"
         @close="closePanels"
       />
     </div>
