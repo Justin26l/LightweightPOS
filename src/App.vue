@@ -3,11 +3,12 @@ import { watch } from 'vue'
 import { useRoute } from 'vue-router'
 import NavBar from './components/NavBar.vue'
 import CartSidebar from './components/CartSidebar.vue'
+import OrderBookSidebar from './components/OrderBookSidebar.vue'
 import { useCart } from './composables/useCart'
 import { useSettings } from './composables/useSettings'
 
 const route = useRoute()
-const { cart: cartState } = useCart()
+const { uiState, toggleCart, toggleOrderBook, closePanels, itemCount } = useCart()
 const { settings, loadSettings } = useSettings()
 loadSettings()
 
@@ -19,11 +20,76 @@ watch(() => settings.storeName, (name) => {
 <template>
   <div class="h-screen w-screen flex flex-col overflow-hidden bg-gray-50">
     <NavBar />
-    <div class="flex-1 flex overflow-hidden">
+    <div class="flex-1 flex overflow-hidden relative">
       <main class="flex-1 overflow-y-auto bg-gray-100">
         <router-view />
       </main>
-      <CartSidebar v-if="cartState.visible && route.name === 'items'" />
+
+      <!-- 侧边面板层 - 渲染在 main 之上 -->
+      <Transition name="panel-slide">
+        <CartSidebar v-if="uiState.cartVisible" @close="closePanels" />
+      </Transition>
+      <Transition name="panel-slide">
+        <OrderBookSidebar v-if="uiState.orderBookVisible" @close="closePanels" />
+      </Transition>
+
+      <!-- 面板背景遮罩 -->
+      <Transition name="fade">
+        <div
+          v-if="uiState.cartVisible || uiState.orderBookVisible"
+          class="absolute inset-0 bg-black/10 z-10"
+          @click="closePanels"
+        />
+      </Transition>
+
+      <!-- FAB 按钮 -->
+      <div class="absolute bottom-6 right-6 z-20 flex flex-col gap-3 items-center">
+        <button
+          @click="toggleCart()"
+          class="w-14 h-14 rounded-full bg-indigo-600 text-white shadow-lg hover:bg-indigo-700 transition-all active:scale-95 flex items-center justify-center text-2xl relative"
+          :title="$t('fab.cart')"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7">
+            <path d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
+          </svg>
+          <span
+            v-if="itemCount.value > 0"
+            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1"
+          >
+            {{ itemCount.value > 99 ? '99+' : itemCount.value }}
+          </span>
+        </button>
+        <button
+          @click="toggleOrderBook()"
+          class="w-14 h-14 rounded-full bg-indigo-600 text-white shadow-lg hover:bg-indigo-700 transition-all active:scale-95 flex items-center justify-center text-2xl relative"
+          :title="$t('fab.orders')"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7">
+            <path d="M5.625 3.75a2.625 2.625 0 100 5.25h12.75a2.625 2.625 0 000-5.25H5.625zM3.75 11.25a.75.75 0 000 1.5h16.5a.75.75 0 000-1.5H3.75zM3.75 15.75a.75.75 0 000 1.5h16.5a.75.75 0 000-1.5H3.75zM3.75 20.25a.75.75 0 000 1.5h16.5a.75.75 0 000-1.5H3.75z" />
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.panel-slide-enter-active,
+.panel-slide-leave-active {
+  transition: transform 0.3s ease;
+}
+.panel-slide-enter-from {
+  transform: translateX(100%);
+}
+.panel-slide-leave-to {
+  transform: translateX(100%);
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

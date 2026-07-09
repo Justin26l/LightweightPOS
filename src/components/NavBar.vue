@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
-import { useCart } from '../composables/useCart'
 import { useSettings } from '../composables/useSettings'
 
 const route = useRoute()
 const router = useRouter()
-const { cart: cartState, toggle } = useCart()
 const { settings } = useSettings()
 
 const tabs = [
@@ -33,12 +31,5 @@ function navigate(path: string) {
     <div class="flex-1" />
     <span class="text-sm mr-2">{{ settings.storeName || '' }}</span>
     <span class="font-bold">{{ settings.currencySymbol || '¥' }}</span>
-    <button
-      @click="toggle()"
-      class="ml-2 px-3 py-1 rounded hover:bg-white/20 transition-colors text-xl"
-      :title="$t(cartState.visible ? 'cart.hide' : 'cart.show')"
-    >
-      {{ cartState.visible ? '◀' : '▶' }}
-    </button>
   </header>
 </template>
