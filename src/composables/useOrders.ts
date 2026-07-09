@@ -1,8 +1,24 @@
 import { db } from '../db'
-import type { CartEntry } from '../types'
+import type { CartEntry, Order, OrderItem } from '../types'
 
 export function useOrders() {
-  async function checkout(cartItems: CartEntry[], currencySymbol: string) {
+  async function getNextOrderNumber(): Promise<number> {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const tomorrow = new Date(today)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+
+    const todayOrders = await db.orders
+      .where('createdAt')
+      .between(today, tomorrow)
+      .toArray()
+    const maxOrderNumber = todayOrders.reduce(
+      (max, o) => Math.max(max, o.orderNumber ?? 0), -1
+    )
+    return maxOrderNumber + 1
+  }
+
+  async function checkout(cartItems: CartEntry[], currencySymbol: string, paymentMethod: string, paid: boolean) {
     // Validate stock first
     const materials = await db.rawMaterials.toArray()
     const itemMats = await db.itemMaterials.toArray()
@@ -49,12 +65,18 @@ export function useOrders() {
       }
     }
 
+    const orderNumber = await getNextOrderNumber()
+
     // Create order
     const orderId = await db.orders.add({
       createdAt: new Date(),
       totalAmount,
       totalCost,
       itemCount,
+      orderNumber,
+      paymentMethod,
+      paid,
+      paidAt: paid ? new Date() : null,
     })
 
     // Create order items
@@ -80,6 +102,36 @@ export function useOrders() {
     }
 
     return orderId
+  }
+
+  async function getOrders(): Promise<Order[]> {
+    return db.orders.orderBy('createdAt').reverse().toArray()
+  }
+
+  async function getOrderItems(orderId: number): Promise<OrderItem[]> {
+    return db.orderItems.where('orderId').equals(orderId).toArray()
+  }
+
+  async function markOrderPaid(orderId: number) {
+    await db.orders.update(orderId, { paid: true, paidAt: new Date() })
+  }
+
+  async function updateOrderItems(orderId: number, items: { type: 'item' | 'combo'; refId: number; name: string; qty: number; unitPrice: number; unitCost: number }[]) {
+    // 全删重建 order items
+    await db.orderItems.where('orderId').equals(orderId).delete()
+    for (const item of items) {
+      await db.orderItems.add({ orderId, ...item })
+    }
+    // 重新计算 totals
+    let totalAmount = 0
+    let totalCost = 0
+    let itemCount = 0
+    for (const item of items) {
+      totalAmount += item.unitPrice * item.qty
+      totalCost += item.unitCost * item.qty
+      itemCount += item.qty
+    }
+    await db.orders.update(orderId, { totalAmount, totalCost, itemCount })
   }
 
   async function getTodaySales() {
@@ -117,5 +169,5 @@ export function useOrders() {
     return { orders, orderItems }
   }
 
-  return { checkout, getTodaySales, getSalesByDateRange }
+  return { getNextOrderNumber, checkout, getOrders, getOrderItems, markOrderPaid, updateOrderItems, getTodaySales, getSalesByDateRange }
 }

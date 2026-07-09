@@ -43,6 +43,10 @@ export interface ItemMaterial {
 
 export interface Order {
   id?: number
+  orderNumber: number       // 当日序号（每天从0开始递增）
+  paymentMethod: string     // 支付方式（从settings列表选取的快照）
+  paid: boolean             // 是否已付款
+  paidAt: Date | null       // 付款时间
   createdAt: Date
   totalAmount: number
   totalCost: number

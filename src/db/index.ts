@@ -23,6 +23,23 @@ export class AppDatabase extends Dexie {
       orderItems: '++id, orderId',
       settings: 'key',
     })
+    this.version(2).stores({
+      items: '++id, groupName',
+      combos: '++id',
+      comboItems: '++id, comboId, itemId',
+      rawMaterials: '++id',
+      itemMaterials: '++id, itemId, materialId',
+      orders: '++id, createdAt',
+      orderItems: '++id, orderId',
+      settings: 'key',
+    }).upgrade(async tx => {
+      await tx.table('orders').toCollection().modify(order => {
+        order.orderNumber = order.orderNumber ?? 0
+        order.paymentMethod = order.paymentMethod ?? ''
+        order.paid = order.paid ?? true  // 既有订单默认为已付
+        order.paidAt = order.paidAt ?? order.createdAt ?? new Date()
+      })
+    })
   }
 }
 

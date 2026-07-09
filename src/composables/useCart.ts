@@ -3,12 +3,15 @@ import type { CartEntry } from '../types'
 
 interface CartState {
   items: CartEntry[]
-  visible: boolean
 }
 
 const state = reactive<CartState>({
   items: [],
-  visible: true,
+})
+
+const uiState = reactive({
+  cartVisible: false,
+  orderBookVisible: false,
 })
 
 export function useCart() {
@@ -21,7 +24,7 @@ export function useCart() {
     } else {
       state.items.push({ ...entry })
     }
-    state.visible = true
+    uiState.cartVisible = true
   }
 
   function updateQty(index: number, qty: number) {
@@ -40,12 +43,23 @@ export function useCart() {
     state.items.splice(0)
   }
 
-  function toggle() {
-    state.visible = !state.visible
+  function toggleCart() {
+    uiState.cartVisible = !uiState.cartVisible
+    if (uiState.cartVisible) uiState.orderBookVisible = false
+  }
+
+  function toggleOrderBook() {
+    uiState.orderBookVisible = !uiState.orderBookVisible
+    if (uiState.orderBookVisible) uiState.cartVisible = false
+  }
+
+  function closePanels() {
+    uiState.cartVisible = false
+    uiState.orderBookVisible = false
   }
 
   function show() {
-    state.visible = true
+    uiState.cartVisible = true
   }
 
   const totalAmount = computed(() =>
@@ -61,11 +75,14 @@ export function useCart() {
 
   return {
     cart: state,
+    uiState,
     addItem,
     updateQty,
     removeEntry,
     clear,
-    toggle,
+    toggleCart,
+    toggleOrderBook,
+    closePanels,
     show,
     totalAmount,
     totalCost,
