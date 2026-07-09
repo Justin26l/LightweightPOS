@@ -39,6 +39,8 @@ export default {
     orderNumber: '订单号',
     items: '品项',
     total: '总计',
+    paidAt: '已付',
+    unpaid: '未付',
   },
   items: {
     title: '品项',

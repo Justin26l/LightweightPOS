@@ -39,6 +39,8 @@ export default {
     orderNumber: 'Order',
     items: 'Items',
     total: 'Total',
+    paidAt: 'Paid',
+    unpaid: 'Unpaid',
   },
   items: {
     title: 'Items',
