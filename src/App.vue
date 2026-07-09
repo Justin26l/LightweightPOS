@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { watch, ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import NavBar from './components/NavBar.vue'
 import CartSidebar from './components/CartSidebar.vue'
 import OrderBookSidebar from './components/OrderBookSidebar.vue'
@@ -7,10 +8,13 @@ import { useCart } from './composables/useCart'
 import { useOrders } from './composables/useOrders'
 import { useSettings } from './composables/useSettings'
 
+const route = useRoute()
 const { uiState, toggleCart, toggleOrderBook, closePanels, itemCount } = useCart()
 const { getOrders } = useOrders()
 const { settings, loadSettings } = useSettings()
 const unpaidCount = ref(0)
+
+const showPanels = () => route.name === 'pos'
 
 async function updateUnpaidCount() {
   const orders = await getOrders()
@@ -36,21 +40,12 @@ watch(() => settings.storeName, (name) => {
         <router-view />
       </main>
 
-      <!-- 侧边面板层 - 渲染在 main 之上 -->
+      <!-- 侧边面板（仅在POS页显示，无遮罩可操作左侧） -->
       <Transition name="panel-slide">
-        <CartSidebar v-if="uiState.cartVisible" @close="closePanels" />
+        <CartSidebar v-if="showPanels() && uiState.cartVisible" @close="closePanels" />
       </Transition>
       <Transition name="panel-slide">
-        <OrderBookSidebar v-if="uiState.orderBookVisible" @close="closePanels" />
-      </Transition>
-
-      <!-- 面板背景遮罩 -->
-      <Transition name="fade">
-        <div
-          v-if="uiState.cartVisible || uiState.orderBookVisible"
-          class="absolute inset-0 bg-black/10 z-10"
-          @click="closePanels"
-        />
+        <OrderBookSidebar v-if="showPanels() && uiState.orderBookVisible" @close="closePanels" />
       </Transition>
 
       <!-- FAB 按钮 -->
@@ -100,13 +95,5 @@ watch(() => settings.storeName, (name) => {
 }
 .panel-slide-leave-to {
   transform: translateX(100%);
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>

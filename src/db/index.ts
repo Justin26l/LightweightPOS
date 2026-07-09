@@ -40,6 +40,21 @@ export class AppDatabase extends Dexie {
         order.paidAt = order.paidAt ?? order.createdAt ?? new Date()
       })
     })
+    this.version(3).stores({
+      items: '++id, groupName',
+      combos: '++id',
+      comboItems: '++id, comboId, itemId',
+      rawMaterials: '++id',
+      itemMaterials: '++id, itemId, materialId',
+      orders: '++id, createdAt',
+      orderItems: '++id, orderId',
+      settings: 'key',
+    }).upgrade(async tx => {
+      await tx.table('orders').toCollection().modify(order => {
+        order.delivered = order.delivered ?? true
+        order.deliveredAt = order.deliveredAt ?? order.createdAt ?? new Date()
+      })
+    })
   }
 }
 

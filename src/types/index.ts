@@ -47,6 +47,8 @@ export interface Order {
   paymentMethod: string     // 支付方式（从settings列表选取的快照）
   paid: boolean             // 是否已付款
   paidAt: Date | null       // 付款时间
+  delivered: boolean        // 是否已取餐/送达
+  deliveredAt: Date | null  // 送达时间
   createdAt: Date
   totalAmount: number
   totalCost: number

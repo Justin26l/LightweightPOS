@@ -3,10 +3,10 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
-    { path: '/', redirect: '/items' },
+    { path: '/', redirect: '/pos' },
     {
-      path: '/items',
-      name: 'items',
+      path: '/pos',
+      name: 'pos',
       component: () => import('../views/ItemsPage.vue'),
     },
     {

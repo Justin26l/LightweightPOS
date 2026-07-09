@@ -1,5 +1,6 @@
 export default {
   nav: {
+    pos: 'POS',
     items: '品项',
     materials: '原材料',
     sales: '今日销售',
@@ -33,6 +34,9 @@ export default {
     empty: '暂无订单',
     modify: '改单',
     markPaid: '标记已付',
+    markDelivered: '标记已送达',
+    delivered: '已送达',
+    notDelivered: '未送达',
     addItem: '添加品项',
     saveChanges: '保存修改',
     cancelEdit: '取消修改',

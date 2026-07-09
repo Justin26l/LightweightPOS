@@ -1,5 +1,6 @@
 export default {
   nav: {
+    pos: 'POS',
     items: 'Items',
     materials: 'Materials',
     sales: 'Sales',
@@ -33,6 +34,9 @@ export default {
     empty: 'No orders yet',
     modify: 'Modify',
     markPaid: 'Mark Paid',
+    markDelivered: 'Mark Delivered',
+    delivered: 'Delivered',
+    notDelivered: 'Pending',
     addItem: 'Add Item',
     saveChanges: 'Save Changes',
     cancelEdit: 'Cancel Edit',

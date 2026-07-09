@@ -6,7 +6,7 @@ import { db } from '../db'
 import ConfirmDialog from './ConfirmDialog.vue'
 
 const emit = defineEmits<{ close: [] }>()
-const { getOrders, getOrderItems, markOrderPaid, updateOrderItems } = useOrders()
+const { getOrders, getOrderItems, markOrderPaid, markOrderDelivered, updateOrderItems } = useOrders()
 const { settings } = useSettings()
 
 const orders = ref<any[]>([])
@@ -17,6 +17,7 @@ const editItems = ref<any[]>([])  // 编辑中的订单品项
 const availableItems = ref<any[]>([])
 const availableCombos = ref<any[]>([])
 const showMarkPaidConfirm = ref<number | null>(null)
+const showMarkDeliveredConfirm = ref<number | null>(null)
 
 onMounted(loadData)
 
@@ -131,6 +132,12 @@ async function handleMarkPaid(orderId: number) {
   orders.value = await getOrders()
 }
 
+async function handleMarkDelivered(orderId: number) {
+  await markOrderDelivered(orderId)
+  showMarkDeliveredConfirm.value = null
+  orders.value = await getOrders()
+}
+
 function handleAddSelect(event: Event) {
   const val = (event.target as HTMLSelectElement).value
   if (!val) return
@@ -170,6 +177,12 @@ function handleAddSelect(event: Event) {
           >
             {{ order.paid ? $t('orderBook.paidAt') : $t('orderBook.unpaid') }}
           </span>
+          <span
+            class="text-xs px-2 py-0.5 rounded-full font-medium"
+            :class="order.delivered ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'"
+          >
+            {{ order.delivered ? $t('orderBook.delivered') : $t('orderBook.notDelivered') }}
+          </span>
           <span v-if="order.paymentMethod" class="text-sm text-gray-500">{{ order.paymentMethod }}</span>
           <span class="ml-auto font-bold">{{ settings.currencySymbol }}{{ order.totalAmount.toFixed(2) }}</span>
         </div>
@@ -186,19 +199,28 @@ function handleAddSelect(event: Event) {
               <span>{{ oi.name }} × {{ oi.qty }}</span>
               <span class="font-medium">{{ settings.currencySymbol }}{{ (oi.unitPrice * oi.qty).toFixed(2) }}</span>
             </div>
-            <!-- 操作按钮（仅未付订单） -->
-            <div v-if="!order.paid" class="flex gap-2 mt-3 pt-3 border-t">
+            <!-- 操作按钮 -->
+            <div v-if="!order.paid || !order.delivered" class="flex gap-2 mt-3 pt-3 border-t">
               <button
+                v-if="!order.paid"
                 @click.stop="startEdit(order)"
                 class="flex-1 px-3 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 text-sm font-medium"
               >
                 {{ $t('orderBook.modify') }}
               </button>
               <button
+                v-if="!order.paid"
                 @click.stop="showMarkPaidConfirm = order.id!"
                 class="flex-1 px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 text-sm font-medium"
               >
                 {{ $t('orderBook.markPaid') }}
+              </button>
+              <button
+                v-if="!order.delivered"
+                @click.stop="showMarkDeliveredConfirm = order.id!"
+                class="flex-1 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-sm font-medium"
+              >
+                {{ $t('orderBook.markDelivered') }}
               </button>
             </div>
           </template>
@@ -265,6 +287,14 @@ function handleAddSelect(event: Event) {
       :message="$t('orderBook.markPaid')"
       @confirm="handleMarkPaid(showMarkPaidConfirm!)"
       @cancel="showMarkPaidConfirm = null"
+    />
+    <!-- 标记已送达确认 -->
+    <ConfirmDialog
+      v-if="showMarkDeliveredConfirm"
+      :title="$t('common.confirm')"
+      :message="$t('orderBook.markDelivered')"
+      @confirm="handleMarkDelivered(showMarkDeliveredConfirm!)"
+      @cancel="showMarkDeliveredConfirm = null"
     />
   </aside>
 </template>

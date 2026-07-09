@@ -7,7 +7,7 @@ const router = useRouter()
 const { settings } = useSettings()
 
 const tabs = [
-  { path: '/items', key: 'nav.items', icon: '❖' },
+  { path: '/pos', key: 'nav.pos', icon: '❖' },
   { path: '/materials', key: 'nav.materials', icon: '📦' },
   { path: '/sales', key: 'nav.sales', icon: '📊' },
   { path: '/settings', key: 'nav.settings', icon: '⚙' },

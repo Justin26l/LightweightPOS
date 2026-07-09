@@ -77,6 +77,8 @@ export function useOrders() {
       paymentMethod,
       paid,
       paidAt: paid ? new Date() : null,
+      delivered: false,
+      deliveredAt: null,
     })
 
     // Create order items
@@ -114,6 +116,10 @@ export function useOrders() {
 
   async function markOrderPaid(orderId: number) {
     await db.orders.update(orderId, { paid: true, paidAt: new Date() })
+  }
+
+  async function markOrderDelivered(orderId: number) {
+    await db.orders.update(orderId, { delivered: true, deliveredAt: new Date() })
   }
 
   async function updateOrderItems(orderId: number, items: { type: 'item' | 'combo'; refId: number; name: string; qty: number; unitPrice: number; unitCost: number }[]) {
@@ -171,5 +177,5 @@ export function useOrders() {
     return { orders, orderItems }
   }
 
-  return { getNextOrderNumber, checkout, getOrders, getOrderItems, markOrderPaid, updateOrderItems, getTodaySales, getSalesByDateRange }
+  return { getNextOrderNumber, checkout, getOrders, getOrderItems, markOrderPaid, markOrderDelivered, updateOrderItems, getTodaySales, getSalesByDateRange }
 }
