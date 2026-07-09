@@ -47,7 +47,7 @@ async function handleCheckout() {
 </script>
 
 <template>
-  <aside class="absolute right-0 top-0 h-full w-[30vw] bg-white border-l border-gray-400 flex flex-col overflow-hidden z-20 shadow-xl">
+  <aside class="bg-white border-l border-gray-400 flex flex-col overflow-hidden shadow-xl h-full">
     <!-- Header -->
     <div class="px-4 py-2 font-bold text-lg border-b border-gray-400 flex items-center justify-between shrink-0">
       <span>

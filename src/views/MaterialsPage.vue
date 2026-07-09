@@ -9,7 +9,7 @@ const { materials, loadMaterials, addMaterial, updateMaterial, deleteMaterial, a
 
 const showForm = ref(false)
 const editingMaterial = ref<RawMaterial | null>(null)
-const form = ref({ name: '', unit: '个', unitCost: 0, currentStock: 0, alertThreshold: 0 })
+const form = ref({ name: '', unit: 'Pcs', unitCost: 0, currentStock: 0, alertThreshold: 0 })
 
 const showAdjust = ref<RawMaterial | null>(null)
 const adjustDelta = ref(0)
@@ -19,7 +19,7 @@ onMounted(loadMaterials)
 
 function openAdd() {
   editingMaterial.value = null
-  form.value = { name: '', unit: '个', unitCost: 0, currentStock: 0, alertThreshold: 0 }
+  form.value = { name: '', unit: 'Pcs', unitCost: 0, currentStock: 0, alertThreshold: 0 }
   showForm.value = true
 }
 
@@ -132,10 +132,10 @@ async function handleDelete(id: number) {
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ $t('materials.unit') }}</label>
           <select v-model="form.unit" class="input">
-            <option value="个">个</option>
+            <option value="Pcs">Pcs</option>
             <option value="g">g</option>
             <option value="ml">ml</option>
-            <option value="包">包</option>
+            <option value="Pack">Pack</option>
           </select>
         </div>
         <div>

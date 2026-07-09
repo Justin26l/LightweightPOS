@@ -405,7 +405,7 @@ fab: {
 `src/composables/useSettings.ts` — 在 `return` 中新增方法：
 
 ```typescript
-const DEFAULT_PAYMENT_METHODS = ['现金', '微信扫码', '支付宝', '银行卡']
+const DEFAULT_PAYMENT_METHODS = ['CASH', 'Online Payment']
 
 export function useSettings() {
   // ... 现有方法 ...

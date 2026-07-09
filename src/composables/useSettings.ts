@@ -7,7 +7,7 @@ interface SettingsState {
   locale: string
 }
 
-const DEFAULT_PAYMENT_METHODS = ['现金', '微信扫码', '支付宝', '银行卡']
+const DEFAULT_PAYMENT_METHODS = ['CASH', 'Online Payment'];
 
 const defaults: SettingsState = {
   storeName: '',

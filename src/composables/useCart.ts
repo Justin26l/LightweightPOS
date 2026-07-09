@@ -25,6 +25,7 @@ export function useCart() {
       state.items.push({ ...entry })
     }
     uiState.cartVisible = true
+    uiState.orderBookVisible = false
   }
 
   function updateQty(index: number, qty: number) {

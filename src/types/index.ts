@@ -26,7 +26,7 @@ export interface ComboItem {
 export interface RawMaterial {
   id?: number
   name: string
-  unit: string          // 个/g/ml/包
+  unit: string          // Pcs/g/ml/Pack
   unitCost: number
   currentStock: number
   alertThreshold: number
