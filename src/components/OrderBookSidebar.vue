@@ -133,6 +133,7 @@ async function handleMarkPaid(orderId: number) {
 }
 
 async function handleMarkDelivered(orderId: number) {
+  await markOrderPaid(orderId)
   await markOrderDelivered(orderId)
   showMarkDeliveredConfirm.value = null
   orders.value = await getOrders()
@@ -179,7 +180,7 @@ function handleAddSelect(event: Event) {
           </span>
           <span
             class="text-xs px-2 py-0.5 rounded-full font-medium"
-            :class="order.delivered ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'"
+            :class="order.delivered ? 'bg-blue-100 text-blue-700' : 'bg-red-200 text-red-700'"
           >
             {{ order.delivered ? $t('orderBook.delivered') : $t('orderBook.notDelivered') }}
           </span>
