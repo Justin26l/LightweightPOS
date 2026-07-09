@@ -9,6 +9,7 @@ const cart = useCart()
 const { checkout } = useOrders()
 const { settings } = useSettings()
 
+const emit = defineEmits<{ close: [] }>()
 const showCheckoutConfirm = ref(false)
 const showClearConfirm = ref(false)
 const checkoutError = ref('')
@@ -18,9 +19,10 @@ async function handleCheckout() {
     checkingOut.value = true
     checkoutError.value = ''
     try {
-        await checkout(cart.cart.items, settings.currencySymbol)
+        await checkout(cart.cart.items, settings.currencySymbol, '', true)
         cart.clear()
         showCheckoutConfirm.value = false
+        emit('close')
     } catch (e: any) {
         checkoutError.value = e.message
     } finally {
@@ -30,8 +32,7 @@ async function handleCheckout() {
 </script>
 
 <template>
-    <aside class="w-[30vw] bg-white border-l border-gray-400 flex flex-col overflow-hidden transition-all duration-300"
-        :class="cart.cart.visible ? 'translate-x-0' : 'translate-x-full'">
+    <aside class="absolute right-0 top-0 h-full w-[30vw] bg-white border-l border-gray-400 flex flex-col overflow-hidden z-20 shadow-xl">
         <!-- Header -->
         <div class="px-4 py-2 font-bold text-lg border-b border-gray-400 flex items-center justify-between">
             <span>
