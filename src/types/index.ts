@@ -91,3 +91,14 @@ export interface CartEntry {
   cost: number
   qty: number
 }
+
+export interface ExportData {
+  version: number
+  exportedAt: string
+  rawMaterials: RawMaterial[]
+  items: Item[]
+  itemMaterials: ItemMaterial[]
+  combos: Combo[]
+  comboItems: ComboItem[]
+  settings: Setting[]
+}
