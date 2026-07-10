@@ -1,5 +1,6 @@
 import { reactive } from 'vue'
 import { db } from '../db'
+import type { ExportData } from '../types'
 
 interface SettingsState {
   storeName: string
@@ -74,6 +75,69 @@ export function useSettings() {
     Object.assign(state, defaults)
   }
 
+  async function exportData(): Promise<string> {
+    const [rawMaterials, items, itemMaterials, combos, comboItems, settings] = await Promise.all([
+      db.rawMaterials.toArray(),
+      db.items.toArray(),
+      db.itemMaterials.toArray(),
+      db.combos.toArray(),
+      db.comboItems.toArray(),
+      db.settings.toArray(),
+    ])
+    const data: ExportData = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      rawMaterials,
+      items,
+      itemMaterials,
+      combos,
+      comboItems,
+      settings,
+    }
+    return JSON.stringify(data, null, 2)
+  }
+
+  function reviveDates<T extends Record<string, any>>(obj: T, dateFields: (keyof T)[]): T {
+    for (const field of dateFields) {
+      if (obj[field] && typeof obj[field] === 'string') {
+        obj[field] = new Date(obj[field]) as any
+      }
+    }
+    return obj
+  }
+
+  async function importData(data: ExportData): Promise<void> {
+    // Validate basic structure
+    if (!data.version || !Array.isArray(data.rawMaterials) || !Array.isArray(data.items) ||
+        !Array.isArray(data.itemMaterials) || !Array.isArray(data.combos) ||
+        !Array.isArray(data.comboItems) || !Array.isArray(data.settings)) {
+      throw new Error('Invalid data format')
+    }
+
+    // Revive Date fields from strings
+    const materials = data.rawMaterials.map(m => reviveDates(m, ['createdAt', 'updatedAt']))
+    const items = data.items.map(i => reviveDates(i, ['createdAt', 'updatedAt']))
+    const combos = data.combos.map(c => reviveDates(c, ['createdAt', 'updatedAt']))
+
+    // Clear tables in FK-safe order
+    await db.comboItems.clear()
+    await db.combos.clear()
+    await db.itemMaterials.clear()
+    await db.items.clear()
+    await db.rawMaterials.clear()
+    await db.settings.clear()
+
+    // Bulk write
+    await Promise.all([
+      db.rawMaterials.bulkAdd(materials),
+      db.items.bulkAdd(items),
+      db.itemMaterials.bulkAdd(data.itemMaterials),
+      db.combos.bulkAdd(combos),
+      db.comboItems.bulkAdd(data.comboItems),
+      db.settings.bulkAdd(data.settings),
+    ])
+  }
+
   return {
     settings: state,
     loadSettings,
@@ -84,5 +148,7 @@ export function useSettings() {
     getPaymentMethods,
     addPaymentMethod,
     deletePaymentMethod,
+    exportData,
+    importData,
   }
 }
