@@ -108,7 +108,7 @@ export function useSettings() {
 
   async function importData(data: ExportData): Promise<void> {
     // Validate basic structure
-    if (!data.version || !Array.isArray(data.rawMaterials) || !Array.isArray(data.items) ||
+    if (data.version !== 1 || !Array.isArray(data.rawMaterials) || !Array.isArray(data.items) ||
         !Array.isArray(data.itemMaterials) || !Array.isArray(data.combos) ||
         !Array.isArray(data.comboItems) || !Array.isArray(data.settings)) {
       throw new Error('Invalid data format')
@@ -119,23 +119,33 @@ export function useSettings() {
     const items = data.items.map(i => reviveDates(i, ['createdAt', 'updatedAt']))
     const combos = data.combos.map(c => reviveDates(c, ['createdAt', 'updatedAt']))
 
-    // Clear tables in FK-safe order
-    await db.comboItems.clear()
-    await db.combos.clear()
-    await db.itemMaterials.clear()
-    await db.items.clear()
-    await db.rawMaterials.clear()
-    await db.settings.clear()
+    // Validate required fields on individual records
+    for (const m of materials) {
+      if (!m.name || !m.unit) throw new Error('Invalid material data: missing name or unit')
+    }
+    for (const i of items) {
+      if (!i.name) throw new Error('Invalid item data: missing name')
+    }
+    for (const c of combos) {
+      if (!c.name) throw new Error('Invalid combo data: missing name')
+    }
 
-    // Bulk write
-    await Promise.all([
-      db.rawMaterials.bulkAdd(materials),
-      db.items.bulkAdd(items),
-      db.itemMaterials.bulkAdd(data.itemMaterials),
-      db.combos.bulkAdd(combos),
-      db.comboItems.bulkAdd(data.comboItems),
-      db.settings.bulkAdd(data.settings),
-    ])
+    // Use transaction for atomic clear + write
+    await db.transaction('rw', [db.comboItems, db.combos, db.itemMaterials, db.items, db.rawMaterials, db.settings], async () => {
+      await db.comboItems.clear()
+      await db.combos.clear()
+      await db.itemMaterials.clear()
+      await db.items.clear()
+      await db.rawMaterials.clear()
+      await db.settings.clear()
+
+      await db.rawMaterials.bulkAdd(materials)
+      await db.items.bulkAdd(items)
+      await db.itemMaterials.bulkAdd(data.itemMaterials)
+      await db.combos.bulkAdd(combos)
+      await db.comboItems.bulkAdd(data.comboItems)
+      await db.settings.bulkAdd(data.settings)
+    })
   }
 
   return {

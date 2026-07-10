@@ -108,7 +108,6 @@ export default {
     language: 'Language',
     groupManager: 'Group Manager',
     dataManager: 'Data Manager',
-    exportDb: 'Export Database',
     clearData: 'Clear All Data',
     confirmClear: 'Clear all data? This cannot be undone.',
     save: 'Save',

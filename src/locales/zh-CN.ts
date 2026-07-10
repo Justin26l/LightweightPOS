@@ -108,7 +108,6 @@ export default {
     language: '语言',
     groupManager: '分组管理',
     dataManager: '数据管理',
-    exportDb: '导出数据库备份',
     clearData: '清空所有数据',
     confirmClear: '确认清空所有数据？此操作不可恢复。',
     save: '保存',

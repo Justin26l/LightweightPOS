@@ -4,7 +4,7 @@ import { useSettings } from '../composables/useSettings'
 import ConfirmDialog from '../components/ConfirmDialog.vue'
 import { version } from '../../package.json'
 
-const { settings, saveSetting, getAllGroups, deleteGroup, clearAllData, getPaymentMethods, addPaymentMethod, deletePaymentMethod } = useSettings()
+const { settings, saveSetting, getAllGroups, deleteGroup, clearAllData, getPaymentMethods, addPaymentMethod, deletePaymentMethod, exportData, importData } = useSettings()
 const groups = ref<string[]>([])
 const showClearConfirm = ref(false)
 const showDeleteGroupConfirm = ref<string | null>(null)
@@ -13,6 +13,11 @@ const saved = ref(false)
 const paymentMethods = ref<string[]>([])
 const newPaymentMethod = ref('')
 const showDeletePaymentConfirm = ref<string | null>(null)
+
+const showImportConfirm = ref(false)
+const importDataBuffer = ref<any>(null)
+const fileInput = ref<HTMLInputElement | null>(null)
+const importMessage = ref('')
 
 onMounted(async () => {
   groups.value = await getAllGroups()
@@ -49,6 +54,50 @@ async function handleDeletePaymentMethod(name: string) {
   await deletePaymentMethod(name)
   paymentMethods.value = await getPaymentMethods()
   showDeletePaymentConfirm.value = null
+}
+
+async function handleExport() {
+  const json = await exportData()
+  const blob = new Blob([json], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `pos-data-${new Date().toISOString().slice(0, 10)}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+function handleImportFileSelected(event: Event) {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target?.result as string)
+      importDataBuffer.value = data
+      showImportConfirm.value = true
+    } catch {
+      importMessage.value = 'Invalid file format'
+      setTimeout(() => { importMessage.value = '' }, 3000)
+    }
+  }
+  reader.readAsText(file)
+  target.value = ''
+}
+
+async function handleConfirmImport() {
+  if (!importDataBuffer.value) return
+  try {
+    await importData(importDataBuffer.value)
+    showImportConfirm.value = false
+    importDataBuffer.value = null
+    importMessage.value = 'Data imported successfully'
+    setTimeout(() => { importMessage.value = '' }, 3000)
+  } catch (err: any) {
+    importMessage.value = err.message || 'Import failed'
+    setTimeout(() => { importMessage.value = '' }, 3000)
+  }
 }
 </script>
 
@@ -158,8 +207,11 @@ async function handleDeletePaymentMethod(name: string) {
     <section class="bg-white rounded-xl p-6 shadow-sm">
       <h3 class="font-bold text-lg mb-4">{{ $t('settings.dataManager') }}</h3>
       <div class="flex gap-4">
-        <button class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-lg">
-          {{ $t('settings.exportDb') }}
+        <button @click="handleExport" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-lg">
+          {{ $t('settings.exportData') }}
+        </button>
+        <button @click="fileInput?.click()" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-lg">
+          {{ $t('settings.importData') }}
         </button>
         <button
           @click="showClearConfirm = true"
@@ -168,6 +220,8 @@ async function handleDeletePaymentMethod(name: string) {
           {{ $t('settings.clearData') }}
         </button>
       </div>
+      <input ref="fileInput" type="file" accept=".json" @change="handleImportFileSelected" class="hidden" />
+      <p v-if="importMessage" class="mt-2 text-sm text-green-600">{{ importMessage }}</p>
     </section>
 
     <!-- Version -->
@@ -194,6 +248,13 @@ async function handleDeletePaymentMethod(name: string) {
       :message="$t('settings.deletePaymentMethod')"
       @confirm="handleDeletePaymentMethod(showDeletePaymentConfirm!)"
       @cancel="showDeletePaymentConfirm = null"
+    />
+    <ConfirmDialog
+      v-if="showImportConfirm"
+      :title="$t('common.confirm')"
+      :message="$t('settings.confirmImport')"
+      @confirm="handleConfirmImport"
+      @cancel="showImportConfirm = false"
     />
   </div>
 </template>
