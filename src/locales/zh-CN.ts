@@ -119,6 +119,11 @@ export default {
     paymentMethods: '支付方式管理',
     addPaymentMethod: '添加支付方式',
     deletePaymentMethod: '删除此支付方式？',
+    exportData: '导出数据 (JSON)',
+    importData: '导入数据 (JSON)',
+    confirmImport: '导入将替换所有现有的原材料、品项、套餐和设置数据，是否继续？',
+    importSuccess: '数据导入成功',
+    invalidFile: '文件格式无效',
   },
   fab: {
     cart: '购物车',

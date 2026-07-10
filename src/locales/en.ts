@@ -119,6 +119,11 @@ export default {
     paymentMethods: 'Payment Methods',
     addPaymentMethod: 'Add Method',
     deletePaymentMethod: 'Delete this method?',
+    exportData: 'Export Data (JSON)',
+    importData: 'Import Data (JSON)',
+    confirmImport: 'Import will replace all existing materials, items, combos and settings. Continue?',
+    importSuccess: 'Data imported successfully',
+    invalidFile: 'Invalid file format',
   },
   fab: {
     cart: 'Cart',
